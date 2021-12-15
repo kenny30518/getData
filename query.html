@@ -97,10 +97,22 @@
         });
     });
 
+    function countElement(array, element) {
+        let tot = 0;
+        for(var el of array) {
+            if(el == element) {
+                tot++;
+            }
+        }
+        return tot;
+    }
+
+    var time = [];
     function handleData(response) {
         var content = '';
         response.forEach(element => {
                     var [num,title,name,trial,date] = element.data;
+                    time.push(String(element.data[4]).slice(0,4));
                     content +=`<tr>
                                   <td>${num}</td>
                                   <td>${title}</td>
@@ -111,6 +123,8 @@
         });
         if (content) {
           document.getElementsByClassName('table-striped')[0].style.display = 'table'; 
+          console.log(time);
+          console.log(countElement(time, "2013"));
         } else {
           alert('查無資料');
         }
