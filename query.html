@@ -47,7 +47,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12 text-center">
-            <h1 class="mt-5">查詢訂單</h1>
+            <h1 class="mt-5">審查次數查詢系統</h1>
         </div>
         <div class="form-group col-xs-12">
             <label>教師姓名:</label>
@@ -60,13 +60,11 @@
             <table class="table table-striped" style="display: none;">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Time</th>
-                        <th>Item</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Update</th>
+                        <th>編號</th>
+                        <th>論文題目</th>
+                        <th>評審</th>
+                        <th>審次</th>
+                        <th>送審日期</th>
                     </tr>
                 </thead>
                 <tbody id="dataView"></tbody>
@@ -78,40 +76,38 @@
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
-        $(function() {
-            $('#send').click(function(e) {
-                var status = true;
-                var name = $('#name').val();
-                $('input').focus(function() {
-                    $(this).css('border', '');
-                });
-                if (name == '') {
-                    $('#name').css('border', '1px solid #ff0000');
-                    status = false;
-                }
-
-                if (status) {
-                    var data = {
-                        'name': name
-                    }
-                    sendQuery(data);
-                }
+    $(function() {
+        $('#send').click(function(e) {
+            var status = true;
+            var name = $('#name').val();
+            $('input').focus(function() {
+                $(this).css('border', '');
             });
-        });
+            if (name == '') {
+                $('#name').css('border', '1px solid #ff0000');
+                status = false;
+            }
 
-        function handleData(response) {
-            var content = '';
-            response.forEach(element => {
-                        var [name] = element.data;
-                        var index = element.index;
-                        content +=`<tr>
-                                    <td>${name}</td>
-                                    <td>${phone}</td>
-                                    <td>${new Date(time)}</td>
-                                    <td>${item}</td>
-                                    <td>${price}</td>
-                                    <td class="status">${statusWording}</td>
-                                  </tr>`;
+            if (status) {
+                var data = {
+                    'name': name
+                }
+                sendQuery(data);
+            }
+        });
+    });
+
+    function handleData(response) {
+        var content = '';
+        response.forEach(element => {
+                    var [num,title,name,trial,date] = element.data;
+                    content +=`<tr>
+                                  <td>${num}</td>
+                                  <td>${title}</td>
+                                  <td>${name}</td>
+                                  <td>${trial}</td>
+                                  <td>${date}</td>
+                               </tr>`;
         });
         if (content) {
           document.getElementsByClassName('table-striped')[0].style.display = 'table'; 
@@ -121,6 +117,7 @@
         var dataView = document.getElementById('dataView');
         dataView.innerHTML = content;
     }
+
     function sendQuery(data){
       $.ajax({
         type: "post",
