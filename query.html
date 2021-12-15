@@ -70,6 +70,19 @@
                 <tbody id="dataView"></tbody>
             </table>
         </div>
+        <div class="form-group col-xs-12">
+            <table class="table table-striped" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>2013</th>
+                        <th>2014</th>
+                        <th>2015</th>
+                        <th>2016</th>
+                    </tr>
+                </thead>
+                <tbody id="countView"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -110,6 +123,7 @@
     var time = [];
     function handleData(response) {
         var content = '';
+        var countContent = '';
         response.forEach(element => {
                     var [num,title,name,trial,date] = element.data;
                     time.push(String(element.data[4]).slice(0,4));
@@ -122,14 +136,26 @@
                                </tr>`;
         });
         if (content) {
-          document.getElementsByClassName('table-striped')[0].style.display = 'table'; 
-          console.log(time);
-          console.log(countElement(time, "2013"));
+          document.getElementsByClassName('table-striped')[0].style.display = 'table';
+          document.getElementsByClassName('table-striped')[1].style.display = 'table';
+          var count2013 = countElement(time, "2013");
+          var count2014 = countElement(time, "2014");
+          var count2015 = countElement(time, "2015");
+          var count2016 = countElement(time, "2016");
+          countContent += `<tr>
+                                  <td>審查${count2013}次</td>
+                                  <td>審查${count2014}次</td>
+                                  <td>審查${count2015}次</td>
+                                  <td>審查${count2016}次</td>
+                               </tr>`;
+          time = [];
         } else {
           alert('查無資料');
         }
         var dataView = document.getElementById('dataView');
         dataView.innerHTML = content;
+        var countView = document.getElementById('countView');
+        countView.innerHTML = countContent;
     }
 
     function sendQuery(data){
