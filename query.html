@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>審查查詢系統</title>
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+        body {
+            padding-top: 54px;
+        }
+        
+        .form-group {
+            text-align: left;
+        }
+        
+        img.img-responsive {
+            height: 400px;
+        }
+        
+        @media (min-width: 992px) {
+            body {
+                padding-top: 56px;
+            }
+        }
+        
+        @media (max-width: 980px) {
+            img.img-responsive {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            img.img-responsive {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h1 class="mt-5">查詢訂單</h1>
+        </div>
+        <div class="form-group col-xs-12">
+            <label for="pwd">教師姓名:</label>
+            <input type="text" class="form-control" id="name">
+        </div>
+        <div class="form-group col-xs-12">
+            <button type="button" id="send" class="btn btn-primary col-xs-12">送出查詢</button>
+        </div>
+        <div class="form-group col-xs-12">
+            <table class="table table-striped" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Time</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody id="dataView"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+        $(function() {
+            $('#send').click(function(e) {
+                var status = true;
+                var name = $('#name').val();
+                $('input').focus(function() {
+                    $(this).css('border', '');
+                });
+                if (name == '') {
+                    $('#name').css('border', '1px solid #ff0000');
+                    status = false;
+                }
+
+                if (status) {
+                    var data = {
+                        'name': name
+                    }
+                    sendQuery(data);
+                }
+            });
+        });
+
+        function handleData(response) {
+            var content = '';
+            response.forEach(element => {
+                        var [name, phone, time, item, price, , status] = element.data;
+                        var index = element.index;
+                        var statusWording = convertStatus(status);
+                        content +=
+                            `<tr>
+                <td>${name}</td>
+                <td>${phone}</td>
+                <td>${new Date(time)}</td>
+                <td>${item}</td>
+                <td>${price}</td>
+                <td class="status">${statusWording}</td>
+                <td>
+                  ${status !== '' ? '-' :
+                    `<button type="button" onclick="updateStatus('${name}', '${phone}', ${index}, this)" class="btn btn-primary">取消訂單</button>`
+                  }
+                </td>
+              </tr>`
+        });
+        if (content) {
+          document.getElementsByClassName('table-striped')[0].style.display = 'table'; 
+        } else {
+          alert('查無資料');
+        }
+        var dataView = document.getElementById('dataView');
+        dataView.innerHTML = content;
+    }
+    function sendQuery(data){
+      $.ajax({
+        type: "post",
+        url: "https://script.google.com/macros/s/AKfycbyIqFh99DnEXkRNMu3YWn0UXfCoKJaaxw_LHcPqyrQkbehPy2IAxOfSM7YRXnJNfDrT/exec",
+        data: data,
+        dataType: "JSON",
+        success: function (response) {
+          handleData(response);
+          $('#name').val('');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
