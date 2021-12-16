@@ -57,6 +57,9 @@
             <button type="button" id="send" class="btn btn-primary col-xs-12">送出查詢</button>
         </div>
         <div class="form-group col-xs-12">
+            <p id="output"></p>
+        </div>
+        <div class="form-group col-xs-12">
             <table class="table table-striped" style="display: none;">
                 <thead>
                     <tr>
@@ -150,12 +153,25 @@
               times.push(countElement(time, uniqueChars[i]));
           }
           document.getElementById('yearHead').innerHTML = yearHead;
+          var outputContent = '';
+          let output = document.getElementById('output');
           for (var i = 0; i<times.length; i++) {
               countContent += `<td>審查${times[i]}次</td>`;
           }
+
+          for (var i = 0; i<times.length; i++) {
+            if (i == times.length-1){
+                outputContent += `${uniqueChars[i]}年審查${times[i]}次`;
+            }else{
+                outputContent += `${uniqueChars[i]}年審查${times[i]}次，`;
+            }
+          }
+          output.innerHTML = outputContent;
+
           uniqueChars = [];
           time = [];
           times = [];
+          outputContent = '';
         } else {
           alert('查無資料');
         }
