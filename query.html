@@ -133,6 +133,12 @@
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
+    $(document).keydown(function(event) {
+        if (event.keyCode === 13) {
+            $("#send").click();
+        }
+    });
+
     $(function() {
         $('#send').click(function(e) {
             var status = true;
@@ -146,6 +152,7 @@
             }
 
             if (status) {
+                output.innerHTML = "資料讀取中...";
                 var data = {
                     'name': name
                 }
@@ -217,6 +224,10 @@
           outputContent = '';
         } else {
           alert('查無資料');
+          output.innerHTML = '';
+          document.getElementsByClassName('table-striped')[0].style.display = 'none';
+          document.getElementsByClassName('table-striped')[1].style.display = 'none';
+          document.querySelector('.output button').style.display = 'none';
         }
         var dataView = document.getElementById('dataView');
         dataView.innerHTML = content;
