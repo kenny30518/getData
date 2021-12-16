@@ -50,7 +50,7 @@
             <h1 class="mt-5">審查次數查詢系統</h1>
         </div>
         <div class="form-group col-xs-12">
-            <label>教師姓名:</label>
+            <label>評審姓名:</label>
             <input type="text" class="form-control" id="name">
         </div>
         <div class="form-group col-xs-12">
@@ -73,14 +73,13 @@
         <div class="form-group col-xs-12">
             <table class="table table-striped" style="display: none;">
                 <thead>
-                    <tr>
-                        <th>2013</th>
-                        <th>2014</th>
-                        <th>2015</th>
-                        <th>2016</th>
+                    <tr id="yearHead">
                     </tr>
                 </thead>
-                <tbody id="countView"></tbody>
+                <tbody>
+                    <tr id="countView"> 
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
@@ -138,17 +137,25 @@
         if (content) {
           document.getElementsByClassName('table-striped')[0].style.display = 'table';
           document.getElementsByClassName('table-striped')[1].style.display = 'table';
-          var count2013 = countElement(time, "2013");
-          var count2014 = countElement(time, "2014");
-          var count2015 = countElement(time, "2015");
-          var count2016 = countElement(time, "2016");
-          countContent += `<tr>
-                                  <td>審查${count2013}次</td>
-                                  <td>審查${count2014}次</td>
-                                  <td>審查${count2015}次</td>
-                                  <td>審查${count2016}次</td>
-                               </tr>`;
+          var uniqueChars = [];
+          time.forEach((c) => {
+              if (!uniqueChars.includes(c)) {
+                uniqueChars.push(c);
+              }
+          });
+          var yearHead = '';
+          var times = [];
+          for (var i = 0; i<uniqueChars.length; i++) {
+              yearHead += '<th>' + uniqueChars[i] + '</th>';
+              times.push(countElement(time, uniqueChars[i]));
+          }
+          document.getElementById('yearHead').innerHTML = yearHead;
+          for (var i = 0; i<times.length; i++) {
+              countContent += `<td>審查${times[i]}次</td>`;
+          }
+          uniqueChars = [];
           time = [];
+          times = [];
         } else {
           alert('查無資料');
         }
